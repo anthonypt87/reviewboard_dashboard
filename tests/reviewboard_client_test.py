@@ -51,4 +51,3 @@ class ReviewboardClientTest(unittest.TestCase):
 		reviewboard_client = ReviewboardClient(self._mock_rb_client)
 		reviews = list(reviewboard_client.get_review_requests())
 		self.assertEqual(len(reviews), 2)
-
