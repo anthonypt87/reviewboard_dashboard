@@ -2,6 +2,7 @@ import datetime
 
 import argparse
 from flask import Flask
+from flask import render_template
 
 import collect_reviewboard_stats
 
@@ -24,7 +25,10 @@ def reviewboard_dashboard():
 		status='pending',
 		cache_directory=app.config['cache_directory'],
 	)
-	return str(reviewboard_stats)
+	return render_template(
+		'reviewboard_dashboard.html',
+		reviewboard_stats=reviewboard_stats
+	)
 
 
 if __name__ == '__main__':

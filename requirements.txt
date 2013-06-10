@@ -1,4 +1,9 @@
+Flask==0.9
+Jinja2==2.7
+MarkupSafe==0.18
 RBTools==0.5.1
+Werkzeug==0.8.3
+argparse==1.2.1
 ipdb==0.7
 ipython==0.13.2
 mock==1.0.1

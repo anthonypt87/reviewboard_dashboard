@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Reviewboard Dashboard</title>
+		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+  </head>
+  <body>
+		<div class="container page pagination-centered">
+			<div class='hero-unit'>
+				<h2>Reviewboard Dashboard!</h2>
+			</div>
+			{% for user, review_requests in reviewboard_stats.iteritems() %}
+				<h3>{{ user }}</h3>
+				<table class="table table-hover">
+					<tr>
+						<td>Id</td>
+						<td>Submitter</td>
+						<td>Reviewers</td>
+						<td>Summary</td>
+					</tr>
+					{% for review_request in review_requests %}
+						<tr>
+							<td>{{ review_request.id }}</td>
+							<td>{{ review_request.submitter }}</td>
+							<td>{{ review_request.reviewers }}</td>
+							<td>{{ review_request.summary }}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			{% endfor %}
+		</div>
+  </body>
+</html>

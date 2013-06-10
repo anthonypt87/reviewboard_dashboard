@@ -5,6 +5,7 @@ import unicodedata
 
 from reviewboard_client import ReviewboardClient
 
+
 def collect_reviewboard_stats(reviewboard_url, usernames, client_kwargs=None, **get_review_requests_kwargs):
 	if client_kwargs is None:
 		client_kwargs = {}
