@@ -35,6 +35,7 @@ def cached_collect_reviewboard_stats(reviewboard_url, usernames, cache_directory
 			os.makedirs(cache_directory)
 		with open(full_path, 'w') as pickle_file:
 			pickle_file.write(pickle.dumps(stats))
+		return stats
 
 
 def _remove_disallowed_filename_characters(filename):
