@@ -12,7 +12,7 @@ class CollectReviewboardStatsTest(unittest.TestCase):
 		request_submitted_from_anthony = self._create_mock_request('anthony', 'andy')
 		request_submitted_from_andy = self._create_mock_request('andy', 'anthony')
 		with mock.patch(
-			'collect_reviewboard_stats.ReviewboardClient'
+			'collect_reviewboard_stats.ReviewboardClient.create_using_reviewboard_url'
 		) as mock_reviewboard_client_class:
 			mock_reviewboard_client = mock_reviewboard_client_class.return_value
 			mock_reviewboard_client.get_review_requests.side_effect = [

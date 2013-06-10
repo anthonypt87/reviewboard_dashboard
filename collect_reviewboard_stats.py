@@ -1,7 +1,7 @@
 from reviewboard_client import ReviewboardClient
 
 def collect_reviewboard_stats(reviewboard_url, usernames):
-	reviewboard_client = ReviewboardClient(reviewboard_url)
+	reviewboard_client = ReviewboardClient.create_using_reviewboard_url(reviewboard_url)
 	return dict(
 		(
 			username,
