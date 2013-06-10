@@ -1,4 +1,5 @@
 from rbtools.api.client import RBClient
+from rbtools.api.errors import APIError
 """Thin wrapper around ``rbtools.api.client.RBClient```"""
 
 
@@ -16,7 +17,7 @@ class ReviewboardClient(object):
 		review_request_list_resource = root.get_review_requests(**filters)
 		while True:
 			for review_request in review_request_list_resource:
-				yield review_request
+				yield ReviewRequest.create_from_rb_client_review_request(review_request)
 			review_request_list_resource = review_request_list_resource.get_next(**filters)
 
 
@@ -52,7 +53,7 @@ class ReviewRequest(object):
 		reviews = []
 		rb_reviews = rb_client_review_request.get_reviews()
 		for rb_review in rb_reviews:
-			reviewer = rb_review.get_user().fields['username']
+			reviewer = cls._get_user_from_rb_review(rb_review)
 			reviews.append({
 				'ship_it': rb_review.fields['ship_it'],
 				'reviewer': reviewer
@@ -66,3 +67,10 @@ class ReviewRequest(object):
 			description,
 			reviews,
 		)
+
+	@classmethod
+	def _get_user_from_rb_review(cls, rb_review):
+		try:
+			return rb_review.get_user().fields['username']
+		except APIError:
+			return rb_review._payload['links']['user']['title']

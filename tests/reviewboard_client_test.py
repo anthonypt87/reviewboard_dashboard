@@ -4,6 +4,7 @@ import mock
 
 from reviewboard_client import ReviewboardClient
 from reviewboard_client import ReviewRequest
+from rbtools.api.errors import APIError
 
 
 class MockRBClient(object):
@@ -33,11 +34,7 @@ class MockRBClient(object):
 		return review_requests_list_resource
 
 	def _create_mock_review_resource(self):
-		return mock.Mock(
-			fields={
-				'status': 'pending', 'id': 3
-			}
-		)
+		return mock.MagicMock()
 
 
 class ReviewboardClientTest(unittest.TestCase):
@@ -59,8 +56,8 @@ class ReviewboardClientTest(unittest.TestCase):
 
 class ReviewRequestTest(unittest.TestCase):
 
-	def test_create_from_rb_client_review_request(self):
-		rb_client_review_request = mock.Mock(
+	def _create_mock_rb_client_review_request(self):
+		return mock.Mock(
 			get_submitter=lambda: mock.Mock(
 				fields={
 					'username': 'anthony'
@@ -93,19 +90,29 @@ class ReviewRequestTest(unittest.TestCase):
 				u'testing_done': u'Wrote some tests',
 				u'time_added': u'2013-06-06 09:50:57'
 			},
-			get_reviews=lambda: [
-				mock.Mock(
-					fields={
-						u'ship_it': True,
-					},
-					get_user=lambda: mock.Mock(
+			get_reviews=mock.Mock(
+				return_value=[
+					mock.Mock(
 						fields={
-							'username': 'andy'
+							u'ship_it': True,
+						},
+						get_user=mock.Mock(
+							return_value=mock.Mock(
+								fields={
+									'username': 'andy'
+								}
+							)
+						),
+						_payload={
+							'links': {'user': {'title': 'andy'}}
 						}
 					)
-				)
-			]
+				]
+			)
 		)
+
+	def test_create_from_rb_client_review_request(self):
+		rb_client_review_request = self._create_mock_rb_client_review_request()
 		review_request = ReviewRequest.create_from_rb_client_review_request(rb_client_review_request)
 		self.assertEqual(review_request.id, 32868)
 		self.assertEqual(review_request.submitter, 'anthony')
@@ -119,3 +126,9 @@ class ReviewRequestTest(unittest.TestCase):
 				'reviewer': 'andy'
 			}]
 		)
+
+	def test_get_from_payload_if_user_is_inactivated(self):
+		rb_client_review_request = self._create_mock_rb_client_review_request()
+		rb_client_review_request.get_reviews()[0].get_user.side_effect = APIError(404, 100)
+		review_request = ReviewRequest.create_from_rb_client_review_request(rb_client_review_request)
+		self.assertEqual(review_request.reviewers, ['andy'])
