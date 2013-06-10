@@ -72,5 +72,9 @@ class ReviewRequest(object):
 	def _get_user_from_rb_review(cls, rb_review):
 		try:
 			return rb_review.get_user().fields['username']
+
+		# Unfortunately, we need peek at a private variable
+		# here in the case where reviewboard gives us an
+		# APIError when the user is inactivated.
 		except APIError:
 			return rb_review._payload['links']['user']['title']
