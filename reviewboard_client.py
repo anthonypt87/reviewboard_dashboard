@@ -8,8 +8,8 @@ class ReviewboardClient(object):
 		self._rb_client = rb_client
 
 	@classmethod
-	def create_using_reviewboard_url(cls, reviewboard_url):
-		rb_client = RBClient(reviewboard_url)
+	def create_using_reviewboard_url(cls, reviewboard_url, **rb_client_kwargs):
+		rb_client = RBClient(reviewboard_url, **rb_client_kwargs)
 		return cls(rb_client)
 
 	def get_review_requests(self, **filters):

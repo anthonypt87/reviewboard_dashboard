@@ -1,3 +1,4 @@
+import pickle
 import unittest
 
 import mock
@@ -132,3 +133,9 @@ class ReviewRequestTest(unittest.TestCase):
 		rb_client_review_request.get_reviews()[0].get_user.side_effect = APIError(404, 100)
 		review_request = ReviewRequest.create_from_rb_client_review_request(rb_client_review_request)
 		self.assertEqual(review_request.reviewers, ['andy'])
+
+	def test_review_request_picklable(self):
+		rb_client_review_request = self._create_mock_rb_client_review_request()
+		review_request = ReviewRequest.create_from_rb_client_review_request(rb_client_review_request)
+		redumped_review_request = pickle.loads(pickle.dumps(review_request))
+		self.assertEqual(redumped_review_request.id, review_request.id)

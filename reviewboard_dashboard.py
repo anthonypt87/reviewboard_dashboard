@@ -1,7 +1,9 @@
+import datetime
+
 import argparse
 from flask import Flask
 
-from collect_reviewboard_stats import collect_reviewboard_stats
+import collect_reviewboard_stats
 
 
 app = Flask(__name__)
@@ -9,9 +11,18 @@ app = Flask(__name__)
 
 @app.route('/')
 def reviewboard_dashboard():
-	reviewboard_stats = collect_reviewboard_stats(
+	client_kwargs = {
+		'username': app.config['username'],
+		'password': app.config['password']
+	}
+	reviewboard_stats = collect_reviewboard_stats.cached_collect_reviewboard_stats(
 		app.config['reviewboard_url'],
-		app.config['reviewboard_users']
+		app.config['reviewboard_users'],
+		client_kwargs=client_kwargs,
+		max_results=200,
+		last_updated_from=datetime.datetime.now() - datetime.timedelta(days=14),
+		status='pending',
+		cache_directory=app.config['cache_directory'],
 	)
 	return str(reviewboard_stats)
 
@@ -19,10 +30,16 @@ def reviewboard_dashboard():
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Start up server to display reviewboard stats')
 	parser.add_argument('reviewboard_url', help='Url to the root of the reviewboard server')
-	parser.add_argument('--reviewboard-users', dest='reviewboard_users', help='URL of reviewboard users to make server for', nargs='*')
+	parser.add_argument('--reviewboard-users', help='URL of reviewboard users to make server for', nargs='*')
+	parser.add_argument('--username', help='Reviewboard username')
+	parser.add_argument('--password', help='Reviewboard password')
+	parser.add_argument('--cache-directory', help='Cache directory (janky way to cache reviewboard results)')
 	args = parser.parse_args()
 
 	app.config['reviewboard_url'] = args.reviewboard_url
 	app.config['reviewboard_users'] = args.reviewboard_users
+	app.config['username'] = args.username
+	app.config['password'] = args.password
+	app.config['cache_directory'] = args.cache_directory
 
 	app.run()
