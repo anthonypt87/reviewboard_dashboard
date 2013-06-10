@@ -5,6 +5,8 @@ def collect_reviewboard_stats(reviewboard_url, usernames):
 	return dict(
 		(
 			username,
-			reviewboard_client.get_review_requests(username)
+			list(
+				reviewboard_client.get_review_requests(to_users_directly=username)
+			)
 		) for username in usernames
 	)
