@@ -1,13 +1,19 @@
+from rbtools.api.client import RBClient
 """Thin wrapper around ``rbtools.api.client.RBClient```"""
 
 
 class ReviewboardClient(object):
 	def __init__(self, rb_client):
 		self._rb_client = rb_client
-		self._root = self._rb_client.get_root()
+
+	@classmethod
+	def create_using_reviewboard_url(cls, reviewboard_url):
+		rb_client = RBClient(reviewboard_url)
+		return cls(rb_client)
 
 	def get_review_requests(self, **filters):
-		review_request_list_resource = self._root.get_review_requests(**filters)
+		root = self._rb_client.get_root()
+		review_request_list_resource = root.get_review_requests(**filters)
 		while True:
 			for review_request in review_request_list_resource:
 				yield review_request

@@ -1,6 +1,7 @@
 import unittest
 
 import mock
+
 from reviewboard_client import ReviewboardClient
 from reviewboard_client import ReviewRequest
 
@@ -40,6 +41,15 @@ class MockRBClient(object):
 
 
 class ReviewboardClientTest(unittest.TestCase):
+
+	def test_create_using_reviewboard_url(self):
+		reviewboard_url = 'http://reviewboard.anthony.com'
+		with mock.patch('reviewboard_client.RBClient') as mock_rb_client:
+			reviewboard_client = ReviewboardClient.create_using_reviewboard_url(reviewboard_url)
+			mock_rb_client.assert_called_once_with(
+				reviewboard_url
+			)
+			self.assertIsNotNone(reviewboard_client)
 
 	def test_get_review_requests(self):
 		reviewboard_client = ReviewboardClient(MockRBClient())
