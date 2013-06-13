@@ -9,7 +9,7 @@
 			<div class='hero-unit'>
 				<h2>Reviewboard Dashboard!</h2>
 			</div>
-			{% for user, review_requests in reviewboard_stats.iteritems() %}
+			{% for user, review_requests in reviewboard_stats|dictsort %}
 				<h3>{{ user }}</h3>
 				<table class="table table-hover">
 					<tr>
@@ -20,7 +20,9 @@
 					</tr>
 					{% for review_request in review_requests %}
 						<tr>
-							<td>{{ review_request.id }}</td>
+							<td>
+								<a href={{ review_url_generator(review_request.id) }}>{{ review_request.id }}</a>
+							</td>
 							<td>{{ review_request.submitter }}</td>
 							<td>{{ review_request.reviewers }}</td>
 							<td>{{ review_request.summary }}</td>

@@ -1,9 +1,10 @@
 from rbtools.api.client import RBClient
 from rbtools.api.errors import APIError
-"""Thin wrapper around ``rbtools.api.client.RBClient```"""
 
 
 class ReviewboardClient(object):
+	"""Thin wrapper around `rbtools.api.client.RBClient`"""
+
 	def __init__(self, rb_client):
 		self._rb_client = rb_client
 

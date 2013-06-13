@@ -27,9 +27,9 @@ def reviewboard_dashboard():
 	)
 	return render_template(
 		'reviewboard_dashboard.html',
-		reviewboard_stats=reviewboard_stats
+		reviewboard_stats=reviewboard_stats,
+		review_url_generator=lambda review_id: '%s/r/%s' % (app.config['reviewboard_url'], review_id)
 	)
-
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Start up server to display reviewboard stats')
