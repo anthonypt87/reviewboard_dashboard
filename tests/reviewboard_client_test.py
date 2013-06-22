@@ -139,3 +139,20 @@ class ReviewRequestTest(unittest.TestCase):
 		review_request = ReviewRequest.create_from_rb_client_review_request(rb_client_review_request)
 		redumped_review_request = pickle.loads(pickle.dumps(review_request))
 		self.assertEqual(redumped_review_request.id, review_request.id)
+
+	def test_primary_reviewer(self):
+		review_request = ReviewRequest(
+			'1',
+			'anthony',
+			['andy'],
+			summary
+		)
+
+	def _create_review_request(self, **extra_review_request_params):
+		review_request_params = {
+			id='id',
+			submitter='anthony',
+			reviewers=['anthony'],
+			description='Primary reviewer: anthony',
+			summary='anthony',
+		}

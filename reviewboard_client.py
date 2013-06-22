@@ -27,8 +27,8 @@ class ReviewRequest(object):
 		self.id = id
 		self.submitter = submitter
 		self.reviewers = reviewers
-		self.description = description
 		self.summary = summary
+		self.description = description
 		self.reviews = reviews
 
 	def __repr__(self):
@@ -40,6 +40,8 @@ class ReviewRequest(object):
 			self.description,
 			self.reviews,
 		)
+
+	def primary_reviewer(self
 
 	@classmethod
 	def create_from_rb_client_review_request(cls, rb_client_review_request):
