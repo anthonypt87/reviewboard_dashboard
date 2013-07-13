@@ -21,9 +21,8 @@ def collect_reviewboard_stats(reviewboard_url, usernames, client_kwargs=None, **
 
 
 def cached_collect_reviewboard_stats(reviewboard_url, usernames, cache_directory, **get_review_requests_kwargs):
-	filename = u'%s+%s.pickle' % (reviewboard_url, '_'.join(sorted(usernames)))
-	filename = _remove_disallowed_filename_characters(filename)
-	full_path = os.path.join(cache_directory, filename)
+
+	full_path = _get_filename_of_cache(reviewboard_url, usernames, cache_directory)
 
 	if os.path.exists(full_path):
 		with open(full_path) as pickle_file:
@@ -36,6 +35,17 @@ def cached_collect_reviewboard_stats(reviewboard_url, usernames, cache_directory
 		with open(full_path, 'w') as pickle_file:
 			pickle_file.write(pickle.dumps(stats))
 		return stats
+
+
+def _get_filename_of_cache(reviewboard_url, usernames, cache_directory):
+	filename = u'%s+%s.pickle' % (reviewboard_url, '_'.join(sorted(usernames)))
+	filename = _remove_disallowed_filename_characters(filename)
+	return os.path.join(cache_directory, filename)
+
+
+def bust_cache(reviewboard_url, usernames, cache_directory):
+	full_path = _get_filename_of_cache(reviewboard_url, usernames, cache_directory)
+	os.remove(full_path)
 
 
 def _remove_disallowed_filename_characters(filename):

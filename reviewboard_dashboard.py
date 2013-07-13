@@ -2,7 +2,9 @@ import datetime
 
 import argparse
 from flask import Flask
+from flask import redirect
 from flask import render_template
+from flask import url_for
 
 import collect_reviewboard_stats
 
@@ -28,8 +30,19 @@ def reviewboard_dashboard():
 	return render_template(
 		'reviewboard_dashboard.html',
 		reviewboard_stats=reviewboard_stats,
-		review_url_generator=lambda review_id: '%s/r/%s' % (app.config['reviewboard_url'], review_id)
+		review_url_generator=lambda review_id: '%s/r/%s' % (app.config['reviewboard_url'], review_id),
+		sorted=sorted
 	)
+
+@app.route('/bust_cache')
+def bust_cache():
+	collect_reviewboard_stats.bust_cache(
+		app.config['reviewboard_url'],
+		app.config['reviewboard_users'],
+		app.config['cache_directory'],
+	)
+	return redirect(url_for('reviewboard_dashboard'))
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Start up server to display reviewboard stats')
@@ -46,4 +59,4 @@ if __name__ == '__main__':
 	app.config['password'] = args.password
 	app.config['cache_directory'] = args.cache_directory
 
-	app.run()
+	app.run(host='0.0.0.0')

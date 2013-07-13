@@ -41,7 +41,9 @@ class ReviewRequest(object):
 			self.reviews,
 		)
 
-	def primary_reviewer(self
+	@property
+	def primary_reviewer(self):
+		return self.description.split('\n')[0]
 
 	@classmethod
 	def create_from_rb_client_review_request(cls, rb_client_review_request):
